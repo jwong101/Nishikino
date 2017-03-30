@@ -9,7 +9,7 @@ gdt_flush:
     
     lgdt (%eax)
 
-    movw $0x10, %ax
+    movw $0x10, %ax #0x10 is the new selector (third entry in gdt)
     
     movw %ax, %ds
     movw %ax, %es
@@ -17,7 +17,7 @@ gdt_flush:
     movw %ax, %gs
     movw %ax, %ss
 
-    ljmp $0x08, $flush
+    ljmp $0x08, $flush #0x08 is the new selector (second entry in gdt)
     
 flush:
     ret

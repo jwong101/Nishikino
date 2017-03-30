@@ -36,10 +36,14 @@ size_t strlen(char *str) {
 
 unsigned char read_port(unsigned short port) {
     unsigned char rv;
-    __asm__ __volatile__ ("inb %1, %0" : "=a" (rv) : "dN" (port));
+    asm volatile ("inb %1, %0" : "=a" (rv) : "dN" (port));
     return rv;
 }
 
-void write_port(unsigned short port, unsigned char data) {
-    __asm__ __volatile__ ("outb %1, %0" : : "dN" (port), "a" (data));
+inline void write_port(unsigned short port, unsigned char data) {
+    asm volatile ("outb %1, %0" : : "dN" (port), "a" (data));
+}
+
+inline void io_wait(void) {
+    asm volatile ("outb %%al, $0x80" : : "a"(0));
 }

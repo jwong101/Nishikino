@@ -5,6 +5,8 @@
 #include <vga.h>
 #include <gdt.h>
 #include <tty.h>
+#include <keyboard.h>
+#include <timer.h>
 #include <interrupt.h>
 #include <system.h>
 
@@ -112,13 +114,19 @@ void kernel_main(void) {
     initialize_terminal();
     setup_gdt();
     init_idt();
-    //isr0();
-    //asm("int $0");
-    vga_putchar(3 / 0);
+
+    install_timer();
+
+    install_keyboard();
+
+    RESUME_INTERRUPTS;
+    //vga_putchar(3 / 0);
+    
     kprintf("Aishiteru Banzai!\n");
     kprintf("Koko de yokatta");
     kprintf(" watashitachi no ima ga koko ni aru\n");
     kprintf("Aishiteru Banzai!\n");
     kprintf("%s", "Hajimatta bakari ashita mo yoroshiku ne mada gooru janai!");
     kprintf("Yohallo!\n");
+    while(1);
 }

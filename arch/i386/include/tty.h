@@ -1,5 +1,6 @@
 #ifndef TTY_H_
 #define TTY_H_
+#include <stddef.h>
 #include <stdint.h>
 
 struct cursor {
