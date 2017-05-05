@@ -8,6 +8,7 @@
 #include <keyboard.h>
 #include <timer.h>
 #include <interrupt.h>
+#include <paging.h>
 #include <system.h>
 
 
@@ -112,15 +113,29 @@ void kprintf(const char *str, ...) {
 
 void kernel_main(void) {
     initialize_terminal();
+    kprintf("Terminal initialized!\n");
+
+    kprintf("Setting up GDT\n");
     setup_gdt();
+
+    kprintf("Setting up Interrupts\n");
     init_idt();
 
+    kprintf("Setting up PIT\n");
     install_timer();
 
     install_keyboard();
 
     RESUME_INTERRUPTS;
+
+    kprintf("Initializing Kernel Page Directory\n");
+    initialize_paging();
+    kprintf("Initialization of Kernel Page Directory Complete!\n");
     //vga_putchar(3 / 0);
+
+    //Test Page fault
+    unsigned int *ptr = (unsigned int *)0xFFFFFFFF;
+    unsigned int fault = *ptr;
     
     kprintf("Aishiteru Banzai!\n");
     kprintf("Koko de yokatta");

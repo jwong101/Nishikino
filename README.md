@@ -11,8 +11,8 @@ An x86 Operating System
 - [x] Write to VGA memory
 - [x] Setup GDT
 - [x] Setup IDT and write ISRs
-- [ ] Setup IRQs and keyboard input
-- [ ] Setup Paging use TSS?
+- [x] Setup IRQs and keyboard input
+- [X] Setup Paging
 - [ ] Create malloc/memory manager
 - [ ] Create filesystem
 - [ ] Start on multithreading?

@@ -200,6 +200,11 @@ void handle_exception(struct reg_states *regs) {
     } 
 }
 
+void handle_page_fault(struct reg_states *regs) {
+   unsigned int addr;
+   asm volatile("mov %%cr2, %0" : "=r" (addr));
+}
+
 void handle_irq(struct reg_states *regs) {
     //STOP_INTERRUPTS;
     unsigned int i_num = regs->interrupt_num;

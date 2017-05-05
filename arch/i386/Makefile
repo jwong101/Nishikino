@@ -11,9 +11,15 @@ CFLAGS := -ffreestanding -O -Wall -Wextra -I./include
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-.PHONY: removeobjs all compile
+.PHONY: removeobjs all compile clean
 
-all: compile removeobjs
+all: checkfolder compile removeobjs
+
+clean: removeobjs
+	rm $(BUILD)/$(TARGET)
+
+checkfolder:
+	if [ ! -d build ]; then mkdir build; fi
 
 compile: $(SOURCES) linker.ld
 	$(CC) $(LDFLAGS) -o $(BUILD)/$(TARGET) -ffreestanding -nostdlib $(SOURCES) -lgcc
