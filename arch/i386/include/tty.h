@@ -18,6 +18,6 @@ void vga_putchar(char c);
 void vga_write_string(char *str, size_t size);
 void kprintf(const char *str, ...);
 void kernel_main(void);
-void vga_write_int(char c);
+void vga_write_int(int print);
 
 #endif

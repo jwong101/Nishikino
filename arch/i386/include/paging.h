@@ -2,9 +2,8 @@
 #define PAGING_H_
 #include <malloc.h>
 
-#define PAGE_DIRECTORY_ADDRESS 0x9C000
-
 #define FRAME_SIZE 0x1000
+#define TABLE_SIZE 0x400
 
 #define GET_BIT(ADDRESS) (ADDRESS / FRAME_SIZE % sizeof(frames[0]))
 #define GET_BYTE_INDEX(ADDRESS) (ADDRESS / FRAME_SIZE / sizeof(frames[0]))
@@ -13,7 +12,7 @@
 static char *frames;
 static unsigned int numFrames;
 
-static unsigned int index;
+static unsigned int currFrame = 0;
 
 struct page_table_entry {
     unsigned char present : 1;
@@ -31,12 +30,12 @@ struct page_table_entry {
 
 struct page_table {
     struct page_table_entry entries[1024];
-} __attribute__((aligned(4096)));
+};
 
 struct page_directory {
     struct page_table *tables[1024];
     unsigned int physTable[1024];
-} __attribute__((aligned(4096)));
+}; 
 
 struct page_directory *kernel_directory;
 /** Used for switching the task paging directories. */

@@ -7,6 +7,7 @@ enable_paging:
     movl %cr0, %eax
     or $80000000, %eax
     movl %eax, %cr0
+    movl %ebp, %esp
     popl %ebp
     ret
 
@@ -16,5 +17,6 @@ set_page_directory:
     movl %esp, %ebp
     movl 8(%ebp), %eax
     movl %eax, %cr3
+    movl %ebp, %esp
     popl %ebp
     ret

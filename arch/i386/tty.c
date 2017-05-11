@@ -5,6 +5,7 @@
 #include <vga.h>
 #include <gdt.h>
 #include <tty.h>
+#include <utils.h>
 #include <keyboard.h>
 #include <timer.h>
 #include <interrupt.h>
@@ -65,9 +66,31 @@ void vga_insert(char c, uint8_t color, uint16_t x, uint16_t y) {
     *(vbuffp + index) = vga_entry(c, color);
 }
 
-void vga_write_int(char c) {
+void vga_write_int(int print) {
+    int store = print;
+    int places = 0;
 
+    while(store > 0) {
+        places++;
+        store /= 10;
+    }
+
+    int stack[places];
+    store = print;
+
+    int counter = 0;
+
+    while(store > 0) {
+        stack[counter++] = store % 10;
+        store /= 10;
+    }
+
+    int i;
+    for(i = LEN(stack) - 1; i >= 0; i--) {
+        vga_putchar(stack[i] + 0x30);
+    }
 }
+
 void vga_putchar(char c) {
     vga_insert(c, fontColor, cursor.x, cursor.y);
     if(++cursor.x >= DEFAULT_WIDTH) {
@@ -89,6 +112,7 @@ void kprintf(const char *str, ...) {
     va_list args;
     va_start(args, str);
     char *s;
+    int i;
     const char *iter;
     for(iter = str; *iter != '\0'; ++iter) {
         if(*iter != '%') {
@@ -98,11 +122,15 @@ void kprintf(const char *str, ...) {
         ++iter;
         switch(*iter) {
         case 'd':
-            vga_write_int(*iter);
+            i = va_arg(args, int);   
+            vga_write_int(i);
             break;
         case 's':
             s = va_arg(args, char *);
             vga_write_string(s, strlen(s));
+            break;
+        case 'c':
+            vga_putchar(va_arg(args, char));
             break;
         case '%':
             vga_putchar(*iter);
@@ -131,10 +159,9 @@ void kernel_main(void) {
     kprintf("Initializing Kernel Page Directory\n");
     initialize_paging();
     kprintf("Initialization of Kernel Page Directory Complete!\n");
-    //vga_putchar(3 / 0);
 
     //Test Page fault
-    unsigned int *ptr = (unsigned int *)0xFFFFFFFF;
+    unsigned int *ptr = (unsigned int *)0xA0000000;
     unsigned int fault = *ptr;
     
     kprintf("Aishiteru Banzai!\n");
