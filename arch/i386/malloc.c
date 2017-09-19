@@ -4,8 +4,10 @@ extern unsigned int end;
 unsigned int placement = (unsigned int)&end;
 
 unsigned int *kpmalloc(size_t size, int aligned, unsigned int *physical_addr) {
-    if(aligned) {
-        size += placement % aligned;
+    int mask = (0xFFFFFFFF - 0x1000 + 1);
+    if(aligned && (placement & mask)) {
+        placement &= mask;
+        placement += aligned;
     }
     unsigned int tmp = placement;
     if(physical_addr) {

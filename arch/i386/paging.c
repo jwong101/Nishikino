@@ -3,6 +3,7 @@
 #include <tty.h>
 
 extern unsigned int placement;
+static int counterHi;
 
 //TODO refactor this garbage
 void set_frame(unsigned int frame_num) {
@@ -14,7 +15,7 @@ int check_frame(unsigned int frame_num) {
 }
 
 void free_frame(unsigned int frame_num) {
-    frames[frame_num / 8] &= (1 << (frame_num % 8));
+    frames[frame_num / 8] &= ~(1 << (frame_num % 8));
 }
 
 void free_page(struct page_table_entry *entry) {
@@ -27,6 +28,19 @@ void free_page(struct page_table_entry *entry) {
 }
 
 unsigned int find_free_frame(void) {
+    int i;
+    for(i = 0; i<numFrames / 8; i++) {
+        if(frames[i] != 0xFF) {
+            int j;
+            for(j = 0; j<8; j++) {
+                if(!( frames[i] & (0x1 << j) ) ) {
+                    return i * 8 + j;
+                }
+            }
+        }
+    }
+    return -1;
+    /**
     unsigned int start = currFrame;
     do {
         if(!check_frame(currFrame)) {
@@ -34,6 +48,7 @@ unsigned int find_free_frame(void) {
         }
         currFrame = currFrame < numFrames ? currFrame + 1 : 0;
     } while(currFrame != start); 
+    */
 }
 
 struct page_table_entry *get_page(unsigned int addr, struct page_directory *dir) {
@@ -43,9 +58,10 @@ struct page_table_entry *get_page(unsigned int addr, struct page_directory *dir)
     if(!dir->tables[table_index]) {
         unsigned int page_t;
         dir->tables[table_index] = (struct page_table *)kpmalloc(sizeof(struct page_table), FRAME_SIZE, &page_t);
-
-        dir->physTable[table_index] = (page_t << 20)| 0x7; 
-    } return &dir->tables[table_index]->entries[page_index]; 
+        //memset(dir->tables[table_index], 0, FRAME_SIZE);
+        dir->physTable[table_index] = page_t | 0x7; 
+    } 
+    return &dir->tables[table_index]->entries[page_index]; 
 }
 
 void allocate_frame(struct page_table_entry *page, int ring_zero, int writePrivelege) {
@@ -92,8 +108,19 @@ struct page_directory *copy(struct page_directory *dir) {
 }
 */
 
+/**
+void switchAR(struct page_directory *dir)
+{
+   asm volatile("mov %0, %%cr3":: "r"(&dir->physTable));
+   unsigned int cr0;
+   asm volatile("mov %%cr0, %0": "=r"(cr0));
+   cr0 |= 0x80000000; // Enable paging!
+   asm volatile("mov %0, %%cr0":: "r"(cr0));
+}
+*/
+
 void initialize_paging(void) {
-    unsigned int end_map = 0x10000000;
+    unsigned int end_map = 0x1000000; 
     numFrames = end_map / FRAME_SIZE;
     frames = (unsigned char *)kmalloc(numFrames / 8);
     memset(frames, 0, numFrames / 8);
@@ -103,14 +130,17 @@ void initialize_paging(void) {
 
     unsigned int i = 0;
     while(i < placement) {
-        allocate_frame(get_page(i, kernel_directory), 1, 1);
+        allocate_frame(get_page(i, kernel_directory), 0, 0);
         //4K pages
         i+=FRAME_SIZE;
     }
-    //curr_directory = copy(kernel_directory);
-    set_page_directory(&kernel_directory->physTable);
+    kprintf("%d\n", counterHi);
+    
+    
+    curr_directory = kernel_directory;
+    set_page_directory(&(kernel_directory->physTable));
+    //switch_page_directory(kernel_directory);
+
     enable_paging();
 }
-
-
 

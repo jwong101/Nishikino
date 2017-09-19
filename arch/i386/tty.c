@@ -141,9 +141,9 @@ void kprintf(const char *str, ...) {
 
 void kernel_main(void) {
     initialize_terminal();
-    kprintf("Terminal initialized!\n");
+//    kprintf("Terminal initialized!\n");
 
-    kprintf("Setting up GDT\n");
+   kprintf("Setting up GDT\n");
     setup_gdt();
 
     kprintf("Setting up Interrupts\n");
@@ -154,21 +154,28 @@ void kernel_main(void) {
 
     install_keyboard();
 
-    RESUME_INTERRUPTS;
 
     kprintf("Initializing Kernel Page Directory\n");
+    clearScreen();
     initialize_paging();
     kprintf("Initialization of Kernel Page Directory Complete!\n");
 
+    RESUME_INTERRUPTS;
     //Test Page fault
-    unsigned int *ptr = (unsigned int *)0xA0000000;
-    unsigned int fault = *ptr;
-    
+    volatile unsigned int fault = *(unsigned int *)0xA00000000AAAAAAAAAAAAAAAAAAAAAAAAAAAA;
+
+    //unsigned int *ptr = (unsigned int *)0xA000000000000;
+    //*ptr = 36;
+    //kprintf("%d\n", *ptr); 
+    //kprintf("Guess the above didn't happen\n");
+
+    /**
     kprintf("Aishiteru Banzai!\n");
     kprintf("Koko de yokatta");
     kprintf(" watashitachi no ima ga koko ni aru\n");
     kprintf("Aishiteru Banzai!\n");
     kprintf("%s", "Hajimatta bakari ashita mo yoroshiku ne mada gooru janai!");
     kprintf("Yohallo!\n");
+    */
     while(1);
 }

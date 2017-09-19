@@ -5,7 +5,7 @@ enable_paging:
     pushl %ebp
     movl %esp, %ebp
     movl %cr0, %eax
-    or $80000000, %eax
+    or $0x80000000, %eax
     movl %eax, %cr0
     movl %ebp, %esp
     popl %ebp
