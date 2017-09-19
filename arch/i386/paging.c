@@ -40,15 +40,6 @@ unsigned int find_free_frame(void) {
         }
     }
     return -1;
-    /**
-    unsigned int start = currFrame;
-    do {
-        if(!check_frame(currFrame)) {
-            return currFrame;
-        }
-        currFrame = currFrame < numFrames ? currFrame + 1 : 0;
-    } while(currFrame != start); 
-    */
 }
 
 struct page_table_entry *get_page(unsigned int addr, struct page_directory *dir) {
@@ -105,17 +96,6 @@ struct page_directory *copy(struct page_directory *dir) {
         }
     }
     return copy;
-}
-*/
-
-/**
-void switchAR(struct page_directory *dir)
-{
-   asm volatile("mov %0, %%cr3":: "r"(&dir->physTable));
-   unsigned int cr0;
-   asm volatile("mov %%cr0, %0": "=r"(cr0));
-   cr0 |= 0x80000000; // Enable paging!
-   asm volatile("mov %0, %%cr0":: "r"(cr0));
 }
 */
 

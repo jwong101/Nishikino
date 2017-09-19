@@ -162,7 +162,7 @@ void kernel_main(void) {
 
     RESUME_INTERRUPTS;
     //Test Page fault
-    volatile unsigned int fault = *(unsigned int *)0xA00000000AAAAAAAAAAAAAAAAAAAAAAAAAAAA;
+    //volatile unsigned int fault = *(unsigned int *)0xA00000000AAAAAAAAAAAAAAAAAAAAAAAAAAAA;
 
     //unsigned int *ptr = (unsigned int *)0xA000000000000;
     //*ptr = 36;
