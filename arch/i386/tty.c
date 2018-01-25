@@ -139,7 +139,7 @@ void kprintf(const char *str, ...) {
     }
 }
 
-void kernel_main(void) {
+void kernel_main(unsigned int base_pointer, unsigned int stack_pointer) {
     initialize_terminal();
 //    kprintf("Terminal initialized!\n");
 
@@ -162,20 +162,12 @@ void kernel_main(void) {
 
     RESUME_INTERRUPTS;
     //Test Page fault
-    //volatile unsigned int fault = *(unsigned int *)0xA00000000AAAAAAAAAAAAAAAAAAAAAAAAAAAA;
+    //volatile unsigned int fault = *(unsigned int *)0xA0000000;
 
     //unsigned int *ptr = (unsigned int *)0xA000000000000;
     //*ptr = 36;
     //kprintf("%d\n", *ptr); 
     //kprintf("Guess the above didn't happen\n");
 
-    /**
-    kprintf("Aishiteru Banzai!\n");
-    kprintf("Koko de yokatta");
-    kprintf(" watashitachi no ima ga koko ni aru\n");
-    kprintf("Aishiteru Banzai!\n");
-    kprintf("%s", "Hajimatta bakari ashita mo yoroshiku ne mada gooru janai!");
-    kprintf("Yohallo!\n");
-    */
     while(1);
 }

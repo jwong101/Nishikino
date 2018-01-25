@@ -13,7 +13,8 @@ An x86 Operating System
 - [x] Setup IDT and write ISRs
 - [x] Setup IRQs and keyboard input
 - [X] Setup Paging
-- [ ] Create malloc/memory manager
+- [x] Create malloc/memory manager
+- [ ] Create heap
 - [ ] Create filesystem
 - [ ] Start on multithreading?
 - [ ] Switch into userspace

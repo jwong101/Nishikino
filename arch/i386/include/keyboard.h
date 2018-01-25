@@ -1,6 +1,7 @@
 #ifndef KEYBOARD_H_
 #define KEYBOARD_H_
 #include <interrupt.h>
+#include <tty.h>
 #include <system.h>
 
 struct keyboard_packet {

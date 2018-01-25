@@ -17,7 +17,6 @@ void vga_insert(char c, uint8_t color, uint16_t x, uint16_t y);
 void vga_putchar(char c);
 void vga_write_string(char *str, size_t size);
 void kprintf(const char *str, ...);
-void kernel_main(void);
 void vga_write_int(int print);
 
 #endif

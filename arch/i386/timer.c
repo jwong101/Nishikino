@@ -12,9 +12,11 @@ void timer_wait(unsigned int ticks) {
 
 void handle_timer_interrupt(struct reg_states *regs) {
     ++total_ticks;
+    /** Used to keep track of seconds
     if(total_ticks % 18 == 0) {
         kprintf("Ohayo");
     }
+    */
 }
 
 void install_timer(void) {
